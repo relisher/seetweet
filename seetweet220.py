@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-#SeeTweet 2.2.0 splits the Python script into a library of useful functions (seetweetlib.py) 
+#SeeTweet 2.2.0 splits the Python script into a library of useful functions (seetweetlib.py)
 # that hopefully won't need customized, and the main script (seetweet220.py) that should be the locus of customization.
 
 from seetweetlib import *
@@ -13,7 +13,7 @@ from seetweetlib import *
 ################################################################################
 
 #loclist = ["39.8,-98.6"]
-loclist = ["30.8,-98.6","39.8,-95.6","32.8,-117.6","37.8,-122.6"]
+loclist = ["50.451,30.524","49.844,24.025","48.002,37.814","46.472,30.737"]
 radius = "2500km"
 multiloc = True
 tweetspersearch = 50
@@ -62,7 +62,7 @@ if (len(sys.argv) > 2):
 			startat = int(featval)
 			overwrite = 'a+'
 			header = False
-		elif tag == '-h':				#-h: omit commented header on csv file 
+		elif tag == '-h':				#-h: omit commented header on csv file
 			header = False
 		elif tag == '-T':				#-T: turn throttling off
 			throttle = False
@@ -131,8 +131,8 @@ elif importmultiloc:
 	tweetlist = [0]*maxpages		#tweetlist[tweetnum][locnum][resnum] = [outline,loc,tid] for the resnum-th baseline tweet in loc locnum on testtweet tweetnum
 	mintids = [0]*maxpages
 	maxtids = [0]*maxpages
-	
-	
+
+
 #Establishing the search & opening to output files
 term1 = sys.argv[1]
 term = re.sub('\"','%22',term1)
@@ -175,10 +175,10 @@ if trackfails:
 		os.mkdir(faildir)
 	outfailfile = faildir+'/'+os.path.splitext(outfile)[0]+'.fails'
 	wff = open(outfailfile,'w')
-	
-	
-	
-	
+
+
+
+
 for latlong in loclist:
 	locnum = locnum + 1
 	geocodestr = latlong+","+radius
@@ -186,7 +186,7 @@ for latlong in loclist:
 	if newmultiloc:
 		currloctweets = []
 		tidbycurrloc = []
-	
+
 	for pagenum in range(0,maxpages):
 		print ''
 		if importmultiloc:
@@ -224,7 +224,7 @@ for latlong in loclist:
 				print ""
 				print "\n\n"
 				sleep(10)
-		
+
 		#Adding a catch for various Twitter errors
 		errors = 0
 		while (errors < MAXERRORS):
@@ -236,7 +236,7 @@ for latlong in loclist:
 				break
 			except TwitterHTTPError as e:
 				errors = errors + 1
-				print "Twitter Error encountered. Retrying",MAXERRORS-errors,"more times."                                                       
+				print "Twitter Error encountered. Retrying",MAXERRORS-errors,"more times."
 				print "\n"+e.response_data
 				sleep(5)
 		if (errors==MAXERRORS):
@@ -248,10 +248,10 @@ for latlong in loclist:
 					res = tsearch.search.tweets(q=term+'+-rt',geocode=geocodestr,count=str(tweetspersearch),result_type="recent")
 				else:
 					res = tsearch.search.tweets(q=term+'+-rt',geocode=geocodestr,count=str(tweetspersearch),result_type="recent",max_id=str(firsthit))
-			except:			
+			except:
 				raise Exception("Gave up because of repeated errors, sorry.")
 		res = res['statuses']
-			
+
 		print len(res), 'hits on page', startat+pagenum+1, '(max_id='+str(firsthit)+')'
 		print r['remaining']-1, 'queries remaining.'
 		if (len(res)==0):
@@ -260,6 +260,7 @@ for latlong in loclist:
 			tweetcount = tweetcount + 1
 			[outline,outcome,tid,tline] = extractinfo(res[i],wff)
 			if outline:
+				print outline
 				if not multiloc:
 					wf.write(outline)
 				elif newmultiloc:
@@ -283,7 +284,7 @@ for latlong in loclist:
 				mintids[pagenum].append(min(tidbycurrloc))
 			else:
 				maxtids[pagenum].append(0)
-				mintids[pagenum].append(0)				
+				mintids[pagenum].append(0)
 			tweetlist[pagenum].append(currloctweets)
 	#endfor searches within a location
 	if newmultiloc:
@@ -313,7 +314,7 @@ if keeptweets:
 	wft.close()
 if trackfails:
 	wff.close()
-	
+
 print '---'
 print 'Searched for', term1
 print tweetcount, 'tweets found. Centered at ', geocodestr

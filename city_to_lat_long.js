@@ -15,7 +15,7 @@ var parser = parse({delimiter: ','}, function (err, data) {
     // do something with the line
     for (city in data) {
       if(city != 0) {
-          city = data[city][5];
+          city = data[city][4];
           getCity(city)
                   }
                 }
