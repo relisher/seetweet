@@ -13,9 +13,9 @@ from seetweetlib import *
 ################################################################################
 
 #loclist = ["39.8,-98.6"]
-loclist = ["50.451,30.524","49.844,24.025","48.002,37.814","46.472,30.737"]
-radius = "2500km"
-multiloc = True
+loclist = ["50.451,30.524"]
+radius = "25000km"
+multiloc = False
 tweetspersearch = 50
 maxpages = 20
 maxid = float("+inf")
@@ -153,7 +153,7 @@ if header:
 	if not multiloc:
 		wf.write('#Search location: '+latlong+','+radius+'\n')
 	else:
-		wf.write('#Search location: U.S. 4-location coverage points (Texas, KC, SD, SF)\n')
+		wf.write('#Search location: Ukraine. 4-location coverage points (Kiev, Lviv, Donetsk, Odessa)\n')
 	wf.write('#Search term: '+term1+'\n')
 if (overwrite=='w' and not multiloc):
 	wf.write('day,year,month,date,hour,minute,second,source,city,state,lat,long,uid,tid\n')

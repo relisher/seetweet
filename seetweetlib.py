@@ -52,7 +52,6 @@ def findcities(text):
 	for city in cities['UA']:
 		city = u''.join(city).lower().encode('utf-8').strip()
 		if city in text:
-			print "matched"
 			return [city,'unk',city,'UA']
 	return None
 
@@ -105,13 +104,13 @@ def extractinfo(res,wff=False):
 		print test_str
 		outcome = 'geo'
 		origloc = str(res['geo']['coordinates'][0])+','+str(res['geo']['coordinates'][1])
-		outputline = outcome+','+'unk,unk,'+origloc+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+'\n'
+		outputline = outcome+','+'unk,unk,'+origloc+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+ ',' + u''.join(tweet.strip()).encode('utf-8').strip() + '\n'
 	elif res['coordinates']:
 		test_str = 'COORD: '+str(res['coordinates']['coordinates'])+' 'u''.join(tweet.strip()).encode('utf-8').strip()
 		print u''.join(test_str).encode('utf-8').strip()
 		outcome = 'coordinates'
 		origloc = str(res['coordinates']['coordinates'][0])+','+str(res['coordinates']['coordinates'][1])
-		outputline = outcome+','+'unk,unk,'+origloc+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+'\n'
+		outputline = outcome+','+'unk,unk,'+origloc+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+ ',' + u''.join(tweet.strip()).encode('utf-8').strip() + '\n'
 	else:
 		loc = res['user']['location'].lower().strip()
 		print u''.join(loc).encode('utf-8').strip()
@@ -121,7 +120,7 @@ def extractinfo(res,wff=False):
 			test_str = 'UT: ['+lr.group(2)+','+lr.group(3)+'] 'u''.join(tweet.strip()).encode('utf-8').strip()
 			print u''.join(test_str).encode('utf-8').strip()
 			outcome = 'ut'
-			outputline = outcome+','+'unk,unk,'+lr.group(2)+','+lr.group(3)+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+'\n'
+			outputline = outcome+','+'unk,unk,'+lr.group(2)+','+lr.group(3)+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+ ',' + u''.join(tweet.strip()).encode('utf-8').strip() + '\n'
 			#return [outputline,outcome,tid]
 		else:
 			#print 'L: '+loc+' '+res['text']
@@ -130,7 +129,7 @@ def extractinfo(res,wff=False):
 				test_str = 'LL: '+loc+' 'u''.join(tweet.strip()).encode('utf-8').strip()
 				print u''.join(test_str).encode('utf-8').strip()
 				outcome = 'llprofile'
-				outputline = outcome+','+'unk,unk,'+ll.group(1)+','+ll.group(2)+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+'\n'
+				outputline = outcome+','+'unk,unk,'+ll.group(1)+','+ll.group(2)+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip() + ',' + u''.join(tweet.strip()).encode('utf-8').strip() + '\n'
 				#return [outputline,outcome,tid]
 			else:
 				loc = loc.replace('.','')
@@ -143,7 +142,7 @@ def extractinfo(res,wff=False):
 							test_str = 'CS: '+city+','+state+' 'u''.join(tweet.strip()).encode('utf-8').strip()
 							print u''.join(test_str).encode('utf-8').strip()
 							outcome = 'citystate'
-							outputline = outcome+','+city+','+state+','+str(cities[state][city][0])+','+str(cities[state][city][1])+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+'\n'
+							outputline = outcome+','+city+','+state+','+str(cities[state][city][0])+','+str(cities[state][city][1])+','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+ ',' + u''.join(tweet.strip()).encode('utf-8').strip() + '\n'
 							tweetline = ','.join([origloc,uid,tid,tweet])
 							return [','.join([tweettime,outputline]),outcome,tid,tweetline]	#skip the rest of the manual city list
 				cityres = findcities(loc)
@@ -152,12 +151,12 @@ def extractinfo(res,wff=False):
 					print test_str
 					outcome = 'knowncity'
 					test = outcome+ ','+ cityres[0]+ ','+cityres[1]+ ',' + ','+cityres[2]+ ','+cityres[3]+ ','+u''.join(uid).encode('utf-8').strip()+','
-					outputline = outcome+ ','+ cityres[0]+ ','+cityres[1]+ ','+cityres[2]+ ','+cityres[3]+ ','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+ '\n'
+					outputline = outcome+ ','+ cityres[0]+ ','+cityres[1]+ ','+cityres[2]+ ','+cityres[3]+ ','+u''.join(uid).encode('utf-8').strip()+','+u''.join(tid).encode('utf-8').strip()+ ',' + u''.join(tweet.strip()).encode('utf-8').strip() + '\n'
 				else:
 					#print 'Unsuccessful loc: ',loc,' (from user ',uid,')\n'
 					test_str = 'F: '+origloc+' '+uid
 					test_str = u''.join(test_str).encode('utf-8').strip()
-					print test_str
+					print test_str +' ' +  u''.join(tweet.strip()).encode('utf-8').strip()
 					outcome = 'failure'
 					if wff:
 						failline = origloc+'\n'
